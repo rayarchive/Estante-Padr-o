@@ -3,66 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha Estante Clean</title>
+    <title>Minha Estante Virtual</title>
     <style>
         body { margin: 0; padding: 0; background-color: transparent; font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
         .furniture-wrapper { width: 90%; max-width: 420px; margin: 20px auto; display: flex; flex-direction: column; align-items: center; }
         
-        /* ESTANTE */
+        /* Estante com cores ajustadas para contraste no Modo Noturno */
         .bookshelf-container {
-            width: 100%; background-color: #0d0d0d; 
-            border: 15px solid #1a1a1a; border-bottom: none; border-radius: 6px 6px 0 0; 
-            box-shadow: 10px 10px 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; position: relative;
+            width: 100%; background-color: #121212; 
+            border: 15px solid #252525; border-bottom: none; border-radius: 6px 6px 0 0; 
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative;
         }
         .bookshelf-container::before {
             content: ''; position: absolute; top: -25px; left: -15px; right: -15px; height: 25px;
-            background: #1a1a1a; border-radius: 4px 4px 0 0; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            background: #252525; border-radius: 4px 4px 0 0; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
         .shelf-row {
-            height: 130px; border-bottom: 12px solid #252525; display: flex; align-items: flex-end; padding: 0 8px;
-            background: linear-gradient(to bottom, #050505, #121212); position: relative; overflow: hidden; 
-            justify-content: flex-start;
+            height: 130px; border-bottom: 12px solid #333; display: flex; align-items: flex-end; padding: 0 8px;
+            background: linear-gradient(to bottom, #0a0a0a, #1a1a1a); position: relative; overflow: hidden; 
         }
         .shelf-row::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 10px; background: rgba(0,0,0,0.4); z-index: 1; }
 
         .shelf-footer { width: 100%; display: flex; justify-content: space-between; padding: 0 5px; box-sizing: border-box; }
-        .foot { width: 50px; height: 30px; background: #1a1a1a; border-radius: 0 0 5px 5px; box-shadow: 5px 5px 10px rgba(0,0,0,0.5); position: relative; }
+        .foot { width: 50px; height: 30px; background: #252525; border-radius: 0 0 5px 5px; box-shadow: 5px 5px 10px rgba(0,0,0,0.5); position: relative; }
         #secret-btn { width: 100%; height: 100%; opacity: 0; cursor: pointer; border: none; }
         
-        /* LIVRO REAL */
-        .book { margin-right: 1px; background-size: cover; background-position: center; border-radius: 1px; box-shadow: 2px 0 5px rgba(0,0,0,0.9); transition: transform 0.2s; position: relative; z-index: 5; cursor: pointer; }
-        
+        .book { margin-right: 1px; background-size: cover; background-position: center; border-radius: 1px; box-shadow: 2px 0 5px rgba(0,0,0,0.9); transition: transform 0.2s; position: relative; }
         .book:hover { transform: scale(1.05) translateY(-5px); z-index: 10; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
         .book:hover::after {
             content: attr(data-title); position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
             background: #000; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; white-space: nowrap; z-index: 20; border: 1px solid #333;
         }
 
-        /* PAINEL DE CONTROLE */
-        #admin-panel { display: none; background: #151515; padding: 15px; border-bottom: 2px solid #333; position: fixed; top: 0; left: 0; right: 0; z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,1); max-height: 85vh; overflow-y: auto; }
+        /* PAINEL */
+        #admin-panel { display: none; background: #151515; padding: 15px; border-bottom: 2px solid #333; position: fixed; top: 0; left: 0; right: 0; z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,1); }
         .input-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
         input { padding: 8px; background: #222; border: 1px solid #444; color: #eee; border-radius: 4px; font-size: 13px; }
-        .input-cm { width: 85px; border: 1px solid #2196F3 !important; }
+        .input-cm { width: 85px; border: 1px solid #2196F3 !important; } /* Destaque para os campos de CM */
         button.action-btn { padding: 8px 16px; cursor: pointer; border: none; border-radius: 4px; font-weight: 600; text-transform: uppercase; font-size: 11px; color: white; }
         .btn-add { background-color: #388E3C; }
-        .btn-close { background-color: #555; }
+        .btn-close { background-color: #D32F2F; }
         .btn-export { background-color: #2196F3; width: 100%; margin-top: 10px;}
-        
-        /* LISTA DE GERENCIAMENTO */
-        #book-list-container { margin-top: 15px; border-top: 1px solid #333; padding-top: 10px; }
-        .list-header { color: #888; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; display: block;}
-        .list-item { display: flex; justify-content: space-between; align-items: center; background: #1f1f1f; padding: 8px 12px; margin-bottom: 4px; border-radius: 4px; border: 1px solid #333; }
-        .list-info { font-size: 13px; color: #ddd; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80%; }
-        .btn-trash { background: #D32F2F; color: white; border: none; border-radius: 4px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-        .btn-trash:hover { background: #ff4444; }
-
     </style>
 </head>
 <body>
 
     <div id="admin-panel">
-        <h3 style="margin: 0 0 10px 0; color: #ccc; font-size: 16px;">Gerenciar Estante</h3>
+        <h3 style="margin: 0 0 10px 0; color: #ccc; font-size: 16px;">Gerenciar Estante (Medidas em CM)</h3>
         <div class="input-group">
             <input type="text" id="seriesName" placeholder="Nome da Série" style="flex: 2;">
             <input type="number" id="volNumber" placeholder="Vol." style="width: 50px;">
@@ -77,11 +65,7 @@
             <button class="action-btn btn-add" onclick="addBook()">Adicionar</button>
             <button class="action-btn btn-close" onclick="togglePanel()">Fechar</button>
         </div>
-        <button class="action-btn btn-export" onclick="exportData()">📋 COPIAR JSON (Backup)</button>
-        <div id="book-list-container">
-            <span class="list-header">Meus Livros (Clique na lixeira para apagar):</span>
-            <div id="active-book-list"></div>
-        </div>
+        <button class="action-btn btn-export" onclick="exportData()">📋 COPIAR LISTA PARA O GITHUB (JSON)</button>
     </div>
 
     <div class="furniture-wrapper">
@@ -100,19 +84,16 @@
     </div>
 
     <script>
-        // -----------------------------------------------------
-        // SEUS LIVROS FIXOS (BACKUP)
-        // -----------------------------------------------------
-        const fixedBooks = [
-            // Exemplo: { series: "Manga", vol: 1, url: "...", h: 90, w: 25, id: 1 }
-        ];
+        // --- COLE AQUI OS DADOS COPIADOS DO PAINEL ---
+        const fixedBooks = [];
+        // --------------------------------------------
 
-        let localBooks = JSON.parse(localStorage.getItem('myMangaShelf_v12')) || [];
+        let localBooks = JSON.parse(localStorage.getItem('myMangaShelf_v6')) || [];
+        let allBooks = [...fixedBooks, ...localBooks];
 
         function togglePanel() {
             const panel = document.getElementById('admin-panel');
             panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-            renderBookList(); 
         }
 
         function addBook() {
@@ -120,9 +101,12 @@
             const vol = parseInt(document.getElementById('volNumber').value) || 0;
             const url = document.getElementById('imgUrl').value.trim();
             const link = document.getElementById('pageLink').value.trim();
+            
+            // Lógica de conversão CM -> Proporção visual
             const hCm = parseFloat(document.getElementById('bookHeightCm').value);
             const wCm = parseFloat(document.getElementById('bookWidthCm').value);
 
+            // Cálculo: 21cm = 90% da altura da prateleira. 1cm de espessura = 18px de largura.
             const calculatedH = (hCm * 90) / 21;
             const calculatedW = wCm * 18;
 
@@ -130,62 +114,25 @@
 
             const newBook = { series, vol, url, link, h: calculatedH.toFixed(1), w: calculatedW.toFixed(1), id: Date.now() };
             localBooks.push(newBook);
-            saveLocal();
+            localStorage.setItem('myMangaShelf_v6', JSON.stringify(localBooks));
             
             document.getElementById('volNumber').value = '';
             document.getElementById('imgUrl').value = '';
-            renderBookList();
-        }
-
-        function saveLocal() {
-            localStorage.setItem('myMangaShelf_v12', JSON.stringify(localBooks));
             renderShelf();
         }
 
-        function deleteBook(bookId) {
-            if(confirm("Remover este livro?")) {
-                localBooks = localBooks.filter(b => b.id !== bookId);
-                saveLocal();
-                renderBookList();
-            }
-        }
-
-        function renderBookList() {
-            const listContainer = document.getElementById('active-book-list');
-            listContainer.innerHTML = '';
-            const sorted = [...localBooks].sort((a, b) => a.series.localeCompare(b.series) || a.vol - b.vol);
-
-            if (sorted.length === 0) {
-                listContainer.innerHTML = '<div style="color:#555; font-size:12px; padding:10px;">Vazio.</div>';
-                return;
-            }
-
-            sorted.forEach(book => {
-                const item = document.createElement('div');
-                item.className = 'list-item';
-                item.innerHTML = `
-                    <span class="list-info"><b>${book.series}</b> #${book.vol}</span>
-                    <button class="btn-trash" onclick="deleteBook(${book.id})">🗑️</button>
-                `;
-                listContainer.appendChild(item);
-            });
-        }
-
         function exportData() {
-            const finalData = [...fixedBooks, ...localBooks];
-            navigator.clipboard.writeText(JSON.stringify(finalData, null, 4)).then(() => alert("Copiado!"));
+            const dataStr = JSON.stringify([...fixedBooks, ...localBooks], null, 4);
+            navigator.clipboard.writeText(dataStr).then(() => alert("Copiado! Cole no GitHub dentro de 'const fixedBooks = [...];'"));
         }
 
         function renderShelf() {
-            // Limpa todas as prateleiras
             for (let i = 1; i <= 6; i++) document.getElementById(`shelf-${i}`).innerHTML = '';
-            
             allBooks = [...fixedBooks, ...localBooks];
             allBooks.sort((a, b) => a.series.localeCompare(b.series) || a.vol - b.vol);
 
             let shelfIndex = 1;
             let currentWidthUsed = 0;
-            const shelfMaxW = 380; 
 
             allBooks.forEach(book => {
                 const bookDiv = document.createElement('div');
@@ -194,23 +141,16 @@
                 bookDiv.style.height = `${book.h}%`;
                 bookDiv.style.width = `${book.w}px`;
                 bookDiv.setAttribute('data-title', `${book.series} #${book.vol}`);
-                
                 if (book.link) bookDiv.onclick = () => window.open(book.link, '_blank');
 
-                // Lógica para pular de prateleira
-                if ((currentWidthUsed + parseFloat(book.w)) > shelfMaxW) {
-                    shelfIndex++;
-                    currentWidthUsed = 0;
-                }
-
+                if ((currentWidthUsed + parseFloat(book.w)) > 380) { shelfIndex++; currentWidthUsed = 0; }
                 const currentShelf = document.getElementById(`shelf-${shelfIndex}`);
                 if (currentShelf) {
                     currentShelf.appendChild(bookDiv);
-                    currentWidthUsed += parseFloat(book.w) + 1; 
+                    currentWidthUsed += parseFloat(book.w) + 1;
                 }
             });
         }
-
         renderShelf();
     </script>
 </body>
